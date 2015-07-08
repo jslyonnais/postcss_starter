@@ -1,21 +1,21 @@
 {
-  "name": "fraincs-postcss-starter",
-  "version": "1.0.0",
-  "description": "fraincs-postcss-starter =====================",
+  "name": "jslyonnais-postcss-starter",
+  "version": "1.0.1",
+  "description": "Fork from fraincs-postcss_starter",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fraincs/postcss_starter"
+    "url": "https://github.com/jslyonnais/postcss_starter"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/fraincs/postcss_starter/issues"
+    "url": "https://github.com/jslyonnais/postcss_starter/issues"
   },
-  "homepage": "https://github.com/fraincs/postcss_starter",
+  "homepage": "https://github.com/jslyonnais/postcss_starter",
   "dependencies": {
     "autoprefixer": "^5.2.0",
     "gulp": "^3.9.0",
