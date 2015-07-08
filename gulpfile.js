@@ -30,6 +30,7 @@ var gulp = require('gulp'),
     /* STYLES DEPENDENCIES */
     postcss = require('gulp-postcss'),
     postcssImport = require('postcss-import'),
+    postcssMixins = require('postcss-mixins'),
     postcssNested = require('postcss-nested'),
     sourcemaps = require('gulp-sourcemaps'),
 
@@ -47,6 +48,7 @@ var gulp = require('gulp'),
     mediaMinmax = require('postcss-media-minmax'),
     postcssEasings = require('postcss-easings'),
     bemLinter = require('postcss-bem-linter'),
+    postcssnot = require('postcss-selector-not'),
 
     postcssPalette = require('postcss-color-palette'),
     // a better palette mrmrs(http://clrs.cc/) is used by default, you can use FlatUI or Material
@@ -159,9 +161,11 @@ CSS TASKS
 gulp.task('styles', function() {
         var processors = [
               postcssImport(),
+              postcssMixins(),
               postcssSimpleVars({
                     variables: vars
                 }),
+              postcssnot(),
               map(opts),
               lost(),
               postcssCalc(),
