@@ -7,12 +7,17 @@ html {
 }
 
 html, body {
-    background: #fff;
+    background: white;
     margin: 0 auto;
     padding: 0;
     border: 0;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+
+    font-size: $baseFontSize;
+    line-height: $baseLineHeight;
+    font-family: $fontFamilySans;
+    color: map(colors, primary, base);
 }
 
 a {
@@ -21,4 +26,9 @@ a {
 
 img {
     display: block;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    margin: 0;
+    padding: 0;
 }

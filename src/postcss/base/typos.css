@@ -1,0 +1,72 @@
+.title {
+	font-family: $fontFamilyHeading;
+	font-weight: $fontWeightNormal;
+	line-height: 1em;
+	text-transform: uppercase;
+}
+	/* TITLE SIZE*/
+	.title--small {
+		font-size: 1.25em;
+		margin-bottom: 1.35em;
+		@media all and (width >= $screenMedium) {
+			font-size: 1.40em;
+		}
+	}
+	.title--medium {
+		font-size: 1.5em;
+		margin-bottom: 1.5em;
+		@media all and (width >= $screenMedium) {
+			font-size: 1.75em;
+		}
+	}
+	.title--large {
+		font-size: 2em;
+		margin-bottom: 2em;
+		@media all and (width >= $screenMedium) {
+			font-size: 3.5em;
+		}
+	}
+
+	/* TITLE WEIGHT */
+	.title--light {
+		font-weight: $fontWeightLight;
+	}
+	.title--semi {
+		font-weight: $fontWeightSemi
+	}
+	.title--chubby {
+		font-weight: $fontWeightBold;
+	}
+
+	/* TITLE VARIANT */
+	.title--reversed {
+		color: white;
+	}
+	.title--highlight {
+		font-size: 110%;
+	}
+	.title--muted {
+		color: map(colors, accent, base);
+	}
+	.title--cap {
+		text-transform: capitalize;
+	}
+
+
+	/* PARAGRAPH */
+	.para {
+		line-height: 1.90em;
+		margin-bottom: 2em;
+	}
+		.para--reversed {
+			color: white;
+		}
+
+	.link {
+		color: map(colors, accent, base);
+		
+		transition: color $time ease;
+		&:hover{
+			color: color(map(colors, accent, base) b(25%));
+		}
+	}

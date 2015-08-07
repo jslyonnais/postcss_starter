@@ -1,0 +1,18 @@
+/*
+	Everything should have a certain z-depth 
+	that determines how far raised or close 
+	to the page the element is.
+
+	Author: Jean-Simon Lyonnais - https://github.com/jslyonnais/
+
+	=== USAGE =====
+	@mixin depth X;
+
+*/
+
+@define-mixin depth $level{
+	$color: color(black a(20%));
+	
+	z-index: $level;
+	box-shadow: 0 calc($level)px calc(($level*2.5))px 0 $color, 0 calc($level)px calc(($level*5))px 0 $color;
+}

@@ -26,9 +26,8 @@ module.exports = {
     baseLineHeight           : '24',  // 'base-font-size * 1.5, 16'
 
     /* Font stacks */
-    fontFamilySans           : '"lato", "Helvetica Neue", Helvetica, Arial, sans-serif',
+    fontFamilySans           : '"Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
     fontFamilyHeading        : '"azo-sans-web", "lato", "Helvetica Neue", Helvetica, Arial, sans-serif',
-    fontFamilySerif          : '"bookmania", Cambria, Georgia, Times, "Times New Roman"',
-    fontFamilyMonospace      : '"Bitstream Vera Sans", Consolas, Menlo, "Lucida Console", "Liberation Mono", Courier, monospace'
+
 
 }
