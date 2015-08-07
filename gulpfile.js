@@ -15,7 +15,7 @@ var gulp = require('gulp'),
 
     /* PERFORMANCE */
     psi = require('psi'),
-    site = 'http://postcss.dev/',
+    site = 'http://postcss.dev/', /* ENTER YOUR DEV URL */
     siteStage = '',
     key = '', // pagespeed key if used a lot better
 
