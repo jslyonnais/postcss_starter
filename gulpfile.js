@@ -15,7 +15,7 @@ var gulp = require('gulp'),
 
     /* PERFORMANCE */
     psi = require('psi'),
-    site = 'http://postcss.dev/', /* ENTER YOUR DEV URL */
+    site = 'http://url.dev/',
     siteStage = '',
     key = '', // pagespeed key if used a lot better
 
@@ -42,6 +42,7 @@ var gulp = require('gulp'),
     postcssCalc = require('postcss-calc'),
     postcssSize = require('postcss-size'),
     postcssBrandColors = require('postcss-brand-colors'),
+    postcssColorFunction = require('postcss-color-function'),
 
     postcssSimpleVars = require('postcss-simple-vars'),
     map = require('postcss-map'),
@@ -175,6 +176,7 @@ gulp.task('styles', function() {
               postcssNested(),
               postcssEasings(),
               postcssBrandColors(),
+              postcssColorFunction(),
               postcssPalette(PALETTECOLOR),
               autoprefixer(AUTOPREFIXER_BROWSERS),
               zIndex()
@@ -364,6 +366,10 @@ gulp.task('prod', ['styles','scriptsprod','svgstore', 'svgmin', 'shoot'], functi
 gulp.task('browser-sync', function() {
     browserSync({
         proxy: site,
+        port: 3000,
+        ui: {
+            port: 3001
+        },
         tunnel: false // mettre a true si on veut un url accessible de l'extérieur
     });
 });
@@ -378,7 +384,7 @@ WATCH TASK
 
 gulp.task('watch', ['browser-sync'], function() {
 
-    gulp.watch(target.postcss_src, ['styles']);               // Watch .styl files
+    gulp.watch(target.postcss_src, ['styles']);               // Watch .css files
     gulp.watch(target.img_src, ['images']);                  // Watch images files
     gulp.watch(target.svg_src, ['svgstore', 'svgmin']);     // Watch svg files
     gulp.watch(target.js_src, ['scripts']);                // Watch .js files
