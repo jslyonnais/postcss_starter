@@ -1,0 +1,13 @@
+# CUSTOM BREAKPOINTS BASED ON FOUNDATION
+# Author: Jean-Simon Lyonnais - https://github.com/jslyonnais/
+# For: PostCSS 
+#
+# USAGE
+# @media all and (width >= map(breakpoints, medium) ) {  
+# 	.your-custom-class { }
+# }
+
+medium:    '48.063em'   # min-width 641px,  medium screens
+large:     '64.063em'   # min-width 1025px, large screens
+xlarge:    '90.063em'   # min-width 1441px, xlarge screens
+xxlarge:   '120.063em'  # min-width 1921px, xxlarge screens

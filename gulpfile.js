@@ -21,12 +21,6 @@ var gulp = require('gulp'),
 
 
 
-    /* ANALYSIS */
-    //listSelectorsPlugin = require('list-selectors'),
-    //cssstats = require('postcss-cssstats'),
-
-
-
     /* STYLES DEPENDENCIES */
     postcss = require('gulp-postcss'),
     postcssImport = require('postcss-import'),
@@ -133,30 +127,16 @@ var PALETTECOLOR = [
 
 
 // variables settings (colors, fonts, etc)
-var vars = require('./src/postcss/configs/sitesettings'),
-    opts = {
-        basePath: './src/postcss/configs/',
-        maps: [ 'colors.yml' ]
-    };
+var vars = {
+    basePath: './src/postcss/configs/',
+    maps: [ 'colors.yml', 'fonts.yml', 'breakpoints.yml' ]
+};
 
 
 
 /*******************************************************************************
 CSS TASKS
 *******************************************************************************/
-
-// custom tasks
-
-// var ratio = function (css, opts) {
-//     css.eachDecl(function(decl) {
-//         if (decl.prop === 'ratio') {
-//             decl.parent.insertAfter(decl, {
-//                 prop: 'content',
-//                 value: '""'
-//             });
-//         }
-//     });
-// };
 
 gulp.task('styles', function() {
         var processors = [
@@ -249,11 +229,23 @@ gulp.task('images', function() {
            gutil.log(gutil.colors.red(error.message));
             this.emit('end');
             }))
-        .pipe(imageOptim.optimize())
         .pipe(gulp.dest(target.img_dest));
 });
 
 
+gulp.task('imagesprod', function() {
+    return gulp.src(target.img_src)
+        .pipe(plumber(function(error){
+           gutil.log(gutil.colors.red(error.message));
+            this.emit('end');
+            }))
+        .pipe(imageOptim.optimize({
+            optimizationLevel: 5,
+            progressive: true,
+            interlaced: true
+        }))
+        .pipe(gulp.dest(target.img_dest));
+});
 
 
 
@@ -280,14 +272,6 @@ gulp.task('svgmin', function() {
 });
 
 
-
-
-
-/*******************************************************************************
-ANALYSIS TASK
-*******************************************************************************/
-
-//@todo
 
 
 /*******************************************************************************
@@ -356,7 +340,7 @@ gulp.task('default', ['styles','scripts','images','svgstore', 'svgmin'], functio
 
 });
 
-gulp.task('prod', ['styles','scriptsprod','svgstore', 'svgmin', 'shoot'], function() {
+gulp.task('prod', ['styles','scriptsprod','imagesprod','svgstore', 'svgmin', 'shoot'], function() {
 
 });
 
@@ -364,7 +348,11 @@ gulp.task('prod', ['styles','scriptsprod','svgstore', 'svgmin', 'shoot'], functi
 gulp.task('browser-sync', function() {
     browserSync({
         proxy: site,
-        tunnel: false // mettre a true si on veut un url accessible de l'extérieur
+        port: 3001,
+        ui: {
+            port: 3008
+        },
+        tunnel: false // set true for online access
     });
 });
 

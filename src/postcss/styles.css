@@ -14,11 +14,6 @@
 
 
 
-/* CONFIGS */
-@import 'configs/depth';
-
-
-
 /* BASE */
 @import 'base/normalize';
 @import 'base/base';
@@ -27,7 +22,7 @@
 
 /* LAYOUT */
 /* Lost Settings (Layout related) */
-@lost gutter 40px;
+@lost gutter 20px;
 @lost flexbox no-flex;
 @lost cycle auto;
 
