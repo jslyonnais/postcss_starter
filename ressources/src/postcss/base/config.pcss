@@ -1,0 +1,22 @@
+/* ROOT/BASE VARIABLES */
+/* Usage: color: var(--colors-base); */
+:root {
+
+    /* COLORS VARIABLES */
+    --colors-base: #343c3f;
+    --colors-highlight: #cfdc27;
+    --colors-error: #F44336;
+    --colors-success: #4CAF50;
+
+    /* FONTS VARIABLES */
+    --fonts-base: "museo-sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --fonts-variant: "Vollkorn", Georgia, serif;
+}
+
+/* BREAKPOINTS VARIABLES */
+/* Usage: @media (--screen-medium) {} */
+@custom-media --screen-small (min-width: 32.250em);     /* min-width 481px,  small screens */
+@custom-media --screen-medium (min-width: 53.813em);    /* min-width 861px,  medium screens */
+@custom-media --screen-large (min-width: 75.938em);     /* min-width 1215px, large screens */
+@custom-media --screen-xlarge (min-width: 90.063em);    /* min-width 1441px, xlarge screens */
+@custom-media --screen-xxlarge (min-width: 120.063em);  /* min-width 1921px, xxlarge screens */

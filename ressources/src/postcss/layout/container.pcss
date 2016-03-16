@@ -1,0 +1,29 @@
+/* Main container/grid */
+.container {
+    position: relative;
+    margin: 0 auto;
+    height: auto;
+    padding: 30px 40px;
+
+    clear: both;
+
+    &&--tin {
+        max-width: 580px;
+    }
+
+    &&--small {
+        max-width: 860px;
+    }
+
+    &&--large {
+        max-width: 1220px;
+    }
+
+    &&--xlarge {
+        max-width: 1920px;
+    }
+}
+
+.container:not(.container--notpadded) ~ .container {
+    padding-top: 0;
+}

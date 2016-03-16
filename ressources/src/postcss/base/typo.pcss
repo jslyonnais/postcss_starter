@@ -1,0 +1,50 @@
+.title {
+    font-size: 35px;
+    line-height: 1.15em;
+    font-weight: normal;
+    font-family: map(fonts, heading);
+
+    @media (--screen-small) {
+        font-size: 45px;
+    }
+
+    &&--small {
+        font-size: 30px;
+    }
+
+    &&--reversed {
+        color: #FFF;
+    }
+}
+
+.align {
+    &--center {
+        text-align: center;
+    }
+    &--left {
+        text-align: left;
+    }
+    &--right {
+        text-align: right;
+    }
+}
+
+.link {
+    color: var(--colors-highlight);
+    transition: color 250ms ease-in-out;
+
+    &:hover {
+        color: var(--colors-base);
+    }
+}
+
+.para {
+    line-height: 16px;
+    line-height: 1.35em;
+
+    margin-bottom: 20px;
+
+    strong {
+        font-weight: bold;
+    }
+}

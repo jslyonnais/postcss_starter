@@ -4,245 +4,143 @@
 DEPENDENCIES
 *******************************************************************************/
 
+    /* TOOLS DEPENDENCIES */
 var gulp = require('gulp'),
+    newer = require('gulp-newer'),
     notify = require('gulp-notify'),
     gutil = require('gulp-util'),
     plumber = require('gulp-plumber'),
-    browserSync = require('browser-sync'),
-    reload  = browserSync.reload,
-
-
-
-    /* PERFORMANCE */
-    psi = require('psi'),
-    site = 'http://url.dev/',
-    siteStage = '',
-    key = '', // pagespeed key if used a lot better
-
-
-
-    /* ANALYSIS */
-    //listSelectorsPlugin = require('list-selectors'),
-    //cssstats = require('postcss-cssstats'),
-
-
+    fileinclude = require('gulp-file-include'),
+    rename = require('gulp-rename');
 
     /* STYLES DEPENDENCIES */
-    postcss = require('gulp-postcss'),
-    postcssImport = require('postcss-import'),
-    postcssMixins = require('postcss-mixins'),
-    postcssNested = require('postcss-nested'),
-    sourcemaps = require('gulp-sourcemaps'),
+var postcss = require('gulp-postcss'),
+    reporter = require('postcss-reporter'),
 
-    // post css
-    lost = require('lost'),
     autoprefixer = require('autoprefixer'),
-    zIndex = require('postcss-zindex'),
-    postcssFocus = require('postcss-focus'),
-    postcssCalc = require('postcss-calc'),
+    colorFunction = require('postcss-color-function'),
+    cssnano = require('cssnano'),
+    lost = require('lost'),
+    custommedia = require('postcss-custom-media'),
+    cssvariables = require('postcss-css-variables'),
+    postcssNested = require('postcss-nested'),
+    pixrem = require('pixrem'),
+    postcssImport = require('postcss-import'),
+    postcssPosition = require('postcss-position'),
     postcssSize = require('postcss-size'),
-    postcssBrandColors = require('postcss-brand-colors'),
-    postcssColorFunction = require('postcss-color-function'),
-
-    postcssSimpleVars = require('postcss-simple-vars'),
-    map = require('postcss-map'),
-    mediaMinmax = require('postcss-media-minmax'),
-    postcssEasings = require('postcss-easings'),
-    bemLinter = require('postcss-bem-linter'),
-    postcssnot = require('postcss-selector-not'),
-
-    postcssPalette = require('postcss-color-palette'),
-    // a better palette mrmrs(http://clrs.cc/) is used by default, you can use FlatUI or Material
-
-
-    cmq = require('gulp-combine-media-queries'),
+    postcssUnprefix = require('postcss-unprefix'),
+    postcssZindex = require('postcss-zindex'),
+    pseudoEnter = require('postcss-pseudo-class-enter');
 
     /* JS DEPENDENCIES */
-    jshint = require('gulp-jshint'),
-    concat = require('gulp-concat'),
-    uglify = require('gulp-uglify'),
-    stylish = require('jshint-stylish'),
-    stripDebug = require('gulp-strip-debug'),
-
-
-
-    /* IMAGES MINIFICATION DEPENDENCIES */
-    imageOptim = require('gulp-imageoptim'),
-
-
+var uglify = require('gulp-uglify'),
+	concat = require('gulp-concat');
 
     /* SVG SPRITES DEPENDENCIES */
-    svgstore = require('gulp-svgstore'),
+var svgstore = require('gulp-svgstore'),
     svgmin = require('gulp-svgmin'),
-    rename = require('gulp-rename'),
-    cheerio = require('gulp-cheerio'),
-
-
-
-    /* COOL TOOLS */
-    Pageres = require('pageres');
-
-
-
-
+    cheerio = require('gulp-cheerio');
 
 /*******************************************************************************
-FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
+VARS
 *******************************************************************************/
 
 var root_paths = {
-
-    assets : './assets/',
-    src : './src/'
+    ressources   : './ressources/',
+    build   : 'dist/',
+    src     : 'src/'
 
 };
+
+var vendorsFiles = [
+    './ressources/vendors/jquery/jquery-1.12.0.min.js',
+];
 
 var target = {
+    main_postcss_src : root_paths.ressources + root_paths.src + 'postcss/styles.css',
+    postcss_src : root_paths.ressources + root_paths.src + 'postcss/**/*.pcss', // all postcss files
+    css_dest : root_paths.ressources + root_paths.build + './css', // where to put minified css
 
-    main_postcss_src : root_paths.src + 'postcss/styles.css',
-    postcss_src : root_paths.src + 'postcss/**/*.css',               // all postcss files
-    css_dest : root_paths.assets + 'css',                           // where to put minified css
+    js_src : root_paths.ressources + root_paths.src + 'js/*.js', // all js files
+    js_dest : root_paths.ressources + root_paths.build + './js', // where to put minified js
 
-    js_src : root_paths.src + 'js/*.js',                            // all js files
-    js_dest : root_paths.assets + 'js/min',                         // where to put minified js
+    img_src : root_paths.ressources + root_paths.src + 'images/**/*.{png,jpg,gif}', // all img files
+    img_dest : root_paths.ressources + root_paths.build + 'images/', // where to put minified img
 
-    img_src : root_paths.src + 'images/**/*.{png,jpg,gif}',       // all img files
-    img_dest : root_paths.assets + 'images',                     // where to put minified img
-
-    svg_src : root_paths.src + 'images/svg/*.svg',
-    svg_dest : root_paths.assets + 'images/svg/svg-sprites/',
-    svgsprite_dest : root_paths.assets + 'images/svg/svg-sprites/'
-
+    svg_src : root_paths.ressources + root_paths.src + 'images/svg/*.svg',
+    svg_dest : root_paths.ressources + root_paths.build + 'svg/',
+    svgsprite_dest : root_paths.ressources + root_paths.build + 'svg/svg-sprite'
 };
 
+var nanoOpts = {
+    zindex: true
+};
 
-
-
-
-/*******************************************************************************
-POSTCSS CONFIG
-*******************************************************************************/
-
-var AUTOPREFIXER_BROWSERS = [
-    'last 2 versions',
-    'ie >= 9'
-];
-
-var PALETTECOLOR = [
-    'mrmrs'
-];
-
-
-// variables settings (colors, fonts, etc)
-var vars = require('./src/postcss/configs/sitesettings'),
-    opts = {
-        basePath: './src/postcss/configs/',
-        maps: [ 'colors.yml' ]
-    };
-
-
+var lostOptions = {
+    "gutter": "20px"
+};
 
 /*******************************************************************************
-CSS TASKS
+STYLES TASKS
 *******************************************************************************/
-
-// custom tasks
-
-// var ratio = function (css, opts) {
-//     css.eachDecl(function(decl) {
-//         if (decl.prop === 'ratio') {
-//             decl.parent.insertAfter(decl, {
-//                 prop: 'content',
-//                 value: '""'
-//             });
-//         }
-//     });
-// };
 
 gulp.task('styles', function() {
         var processors = [
-              postcssImport(),
-              postcssMixins(),
-              postcssSimpleVars({
-                    variables: vars
-                }),
-              postcssnot(),
-              map(opts),
-              lost(),
-              postcssCalc(),
-              postcssFocus(),
-              postcssSize(),
-              mediaMinmax(),
-              postcssNested(),
-              postcssEasings(),
-              postcssBrandColors(),
-              postcssColorFunction(),
-              postcssPalette(PALETTECOLOR),
-              autoprefixer(AUTOPREFIXER_BROWSERS),
-              zIndex()
+          postcssImport(),
+          postcssSize(),
+          custommedia(),
+          postcssUnprefix,
+          postcssNested,
+          pixrem,
+          postcssPosition(),
+          cssvariables,
+          colorFunction,
+          pseudoEnter,
+          lost(lostOptions),
+          autoprefixer({ browsers: ['last 2 versions', 'ie 9-11', 'Firefox > 20'] }),
+          cssnano(nanoOpts),
+          reporter()
         ];
 
     return gulp.src(target.main_postcss_src)
         .pipe(plumber(function(error){
            gutil.log(gutil.colors.red(error.message));
-            this.emit('end');
-            }))
-        .pipe(sourcemaps.init())
-        .pipe(postcss(processors))
-        .pipe(cmq({
-            log: true
+           this.emit('end');
         }))
-        .pipe(sourcemaps.write('./'))
+        .pipe(postcss(processors))
+        .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(target.css_dest))
-        .pipe(reload({stream:true}))
-        .pipe(notify('POSTCSS task completed'));
+        .pipe(notify('👌 Styles task completed!'));
 });
 
-
-
-
-
 /*******************************************************************************
-JS TASK
+JS TASKS
 *******************************************************************************/
 
-gulp.task('scripts', function() {
+gulp.task('scripts-internal', function() {
     return gulp.src(target.js_src)
-        .pipe(plumber(function(error){
-           gutil.log(gutil.colors.red(error.message));
-            this.emit('end');
-            }))
-        .pipe(jshint())
-        .pipe(jshint.reporter(stylish))
-        .pipe(concat('scripts.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest(target.js_dest))
-        .pipe(notify('Scripts task completed'));
+    .pipe(plumber(function(error){
+        gutil.log(gutil.colors.red(error.message));
+        this.emit('end');
+     }))
+	.pipe(fileinclude())
+    .pipe(uglify())
+    .pipe(concat('scripts.min.js'))
+    .pipe(gulp.dest(target.js_dest))
+    .pipe(notify('👌 Internal scripts task completed'));
 });
 
-
-// redundancy here maybe change this thing
-gulp.task('scriptsprod', function() {
-    return gulp.src(target.js_src)
-        .pipe(plumber(function(error){
-           gutil.log(gutil.colors.red(error.message));
-            this.emit('end');
-            }))
-        .pipe(jshint())
-        .pipe(jshint.reporter(stylish))
-        .pipe(concat('scripts.min.js'))
-        .pipe(uglify())
-        .pipe(stripDebug())
-        .pipe(gulp.dest(target.js_dest))
-        .pipe(notify('Scripts task completed'));
+gulp.task('scripts-vendors', function() {
+  return gulp.src(vendorsFiles)
+	.pipe(fileinclude())
+    .pipe(uglify())
+    .pipe(concat('vendors.min.js'))
+    .pipe(gulp.dest(target.js_dest))
+    .pipe(notify('👌 Vendors scripts task completed'));
 });
-
-
-
-
 
 /*******************************************************************************
-IMAGES TASK
+IMAGES TASKS
 *******************************************************************************/
 
 gulp.task('images', function() {
@@ -251,14 +149,8 @@ gulp.task('images', function() {
            gutil.log(gutil.colors.red(error.message));
             this.emit('end');
             }))
-        .pipe(imageOptim.optimize())
         .pipe(gulp.dest(target.img_dest));
 });
-
-
-
-
-
 
 /*******************************************************************************
 SVG TASKS
@@ -267,7 +159,6 @@ SVG TASKS
 gulp.task('svgstore', function() {
     return gulp.src(target.svg_src)
         .pipe(rename({ prefix: 'icon-' }))
-        .pipe(svgmin())
         .pipe(svgstore({ inlineSvg: true }))
         .pipe(cheerio(function ($) {
             $('svg').attr('style',  'display:none');
@@ -281,112 +172,26 @@ gulp.task('svgmin', function() {
     .pipe(gulp.dest(target.svg_dest));
 });
 
+gulp.task('svg',['svgstore','svgmin'], function() {
+    console.log('👌 SVG task completed!');
+});
 
+/*******************************************************************************
+DEFAULT TASKS
+*******************************************************************************/
 
+gulp.task('default', ['styles','scripts-internal','scripts-vendors', 'images', 'svg'], function() {
+  console.log('Default Task executed');
+});
 
 
 /*******************************************************************************
-ANALYSIS TASK
+WATCH TASKS
 *******************************************************************************/
-
-//@todo
-
-
-/*******************************************************************************
-PERFORMANCE TASK
-*******************************************************************************/
-
-// Please feel free to use the `nokey` option to try out PageSpeed
-// Insights as part of your build process. For more frequent use,
-// we recommend registering for your own API key. For more info:
-// https://developers.google.com/speed/docs/insights/v1/getting_started
-
-gulp.task('mobile', function () {
-    return psi(siteStage, {
-        // key: key
-        nokey: 'true',
-        strategy: 'mobile',
-    }, function (err, data) {
-        console.log(data.score);
-        console.log(data.pageStats);
-    });
-});
-
-gulp.task('desktop', function () {
-    return psi(siteStage, {
-        nokey: 'true',
-        // key: key,
-        strategy: 'desktop',
-    }, function (err, data) {
-        console.log(data.score);
-        console.log(data.pageStats);
-    });
-});
-
-
-
-
-
-/*******************************************************************************
-COOL TASKS
-*******************************************************************************/
-
-gulp.task('shoot', function () {
-
-    var pageres = new Pageres({delay: 2})
-        .src(site, ['w3counter'], {filename:' <%= url %> - <%= date %> -  <%= time %> - <%= size %>'})
-        .dest('./pageres');
-
-    pageres.run(function (err) {
-        if (err) {
-            throw err;
-        }
-
-        console.log('Shooting of ' + site + ' terminé!');
-    });
-});
-
-
-
-
-
-/*******************************************************************************
-DEFAULT TASK
-*******************************************************************************/
-
-gulp.task('default', ['styles','scripts','images','svgstore', 'svgmin'], function() {
-
-});
-
-gulp.task('prod', ['styles','scriptsprod','svgstore', 'svgmin', 'shoot'], function() {
-
-});
-
-
-gulp.task('browser-sync', function() {
-    browserSync({
-        proxy: site,
-        port: 3000,
-        ui: {
-            port: 3001
-        },
-        tunnel: false // mettre a true si on veut un url accessible de l'extérieur
-    });
-});
-
-
-
-
-
-/*******************************************************************************
-WATCH TASK
-*******************************************************************************/
-
-gulp.task('watch', ['browser-sync'], function() {
-
-    gulp.watch(target.postcss_src, ['styles']);               // Watch .css files
-    gulp.watch(target.img_src, ['images']);                  // Watch images files
-    gulp.watch(target.svg_src, ['svgstore', 'svgmin']);     // Watch svg files
-    gulp.watch(target.js_src, ['scripts']);                // Watch .js files
-
+gulp.task('watch', function() {
+    gulp.watch(target.main_postcss_src, ['styles']); // Watch .styles files
+    gulp.watch(target.postcss_src, ['styles']); // Watch .styles files
+    gulp.watch(target.img_src, ['images']); // Watch images files
+    gulp.watch(target.js_src, ['scripts-internal']); // Watch .js files
+    gulp.watch(target.js_vendor, ['scripts-vendors']); // Watch .js vendors files
 });
